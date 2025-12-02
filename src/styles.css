@@ -239,37 +239,43 @@ button:hover {
   transform: scale(1.05);
 }
 
-#reset-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  font-size: 12px;
-  padding: 8px 12px;
-  background: rgba(220, 53, 69, 0.8);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  z-index: 100;
-  pointer-events: auto; /* CRITICAL: Re-enable clicks */
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-#reset-btn:hover {
-  background: rgba(220, 53, 69, 1.0);
-  transform: scale(1.05);
-}
-
 @media (max-width: 600px) {
+  /* Compact Header for Mobile */
+  #header {
+    top: 10px;
+    left: 10px;
+    gap: 4px;
+  }
+  
+  #level {
+    font-size: 24px; /* Smaller */
+  }
+  
+  #score {
+    font-size: 18px; /* Smaller */
+  }
+  
+  #header button {
+    font-size: 12px;
+    padding: 6px 12px;
+    margin-top: 4px !important; /* Override inline style */
+  }
+
+  /* Legend Centered Bottom - Toggled via button now */
   #legend-container {
     display: flex;
-    flex-direction: row; /* Horizontal on mobile */
+    flex-direction: row; 
     top: auto;
-    bottom: 100px; /* Above controls */
+    bottom: 100px; 
     right: 50%;
     transform: translateX(50%);
-    gap: 8px;
-    padding: 8px;
+    gap: 6px;
+    padding: 6px;
+  }
+
+  /* Hide by default if user toggles it */
+  #legend-container.hidden {
+    display: none !important;
   }
 
   .legend-item {
@@ -277,23 +283,38 @@ button:hover {
     height: 20px;
   }
 
-  /* Arrow connecting items - hidden on mobile to save space */
-  .legend-item:not(:last-child)::after {
-    display: none; 
+  /* Controls Compact */
+  #controls {
+    bottom: 20px;
+    gap: 4px;
+  }
+  
+  .horizontal-controls {
+    gap: 4px;
   }
   
   .arrow-btn {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+    border-radius: 8px;
   }
 
+  /* Modals */
   #level-selector, #leaderboard-modal, #gamertag-modal, #game-over, #level-complete {
-    width: 90%; /* Use percentage for mobile */
-    min-width: auto;
+    width: 85%; 
     padding: 20px;
+    min-width: auto;
   }
-
+  
   #levels-grid {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns instead of 4 */
+    grid-template-columns: repeat(4, 1fr); /* Keep 4 if small enough, or 3 */
+    gap: 6px;
+  }
+  
+  .level-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
   }
 }

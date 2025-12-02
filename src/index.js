@@ -271,15 +271,10 @@ closeLeaderboardBtn.addEventListener('click', () => {
     leaderboardModal.classList.add('hidden');
 });
 
-// Reset Data Logic
-const resetBtn = document.getElementById('reset-btn');
-resetBtn.addEventListener('click', () => {
-    if (confirm("Are you sure you want to reset ALL progress and leaderboard data? This cannot be undone.")) {
-        SaveManager.resetData();
-        LeaderboardManager.resetLeaderboard();
-        alert("Data reset! refreshing...");
-        location.reload();
-    }
+// Legend Toggle Logic
+const legendToggleBtn = document.getElementById('legend-toggle-btn');
+legendToggleBtn.addEventListener('click', () => {
+    legendContainer.classList.toggle('hidden');
 });
 
 // Main Loop
