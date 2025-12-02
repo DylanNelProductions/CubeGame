@@ -5,6 +5,7 @@ import { animateMove, animateMerge, animateBounce, animateIceBreak } from './ani
 import { canMerge } from './mergeLogic.js';
 import { ParticleSystem } from './particles.js';
 import { getLevelConfig } from './levels.js';
+import { getTheme } from '../utils/themes.js';
 import { sounds } from '../core/audio.js'; // Import sounds
 import gsap from 'gsap';
 
@@ -15,7 +16,8 @@ export class Board {
     this.level = level;
     
     const config = getLevelConfig(level);
-    this.maxColors = config.maxColors; 
+    this.maxColors = config.maxColors;
+    this.theme = getTheme(level); 
     
     this.grid = []; 
     this.group = new THREE.Group();
@@ -64,15 +66,17 @@ export class Board {
   }
 
   createFloor() {
+    const floorColor = this.theme ? this.theme.floorColor : 0x2a2a2a;
+    const center = (this.size - 1) / 2;
+    
     // Main Floor
     const geometry = new THREE.PlaneGeometry(this.size, this.size);
     const material = new THREE.MeshStandardMaterial({ 
-      color: 0x2a2a2a, // Slightly lighter than background
+      color: floorColor,
       side: THREE.DoubleSide
     });
     const floor = new THREE.Mesh(geometry, material);
     floor.rotation.x = -Math.PI / 2;
-    const center = (this.size - 1) / 2;
     floor.position.set(center, 0, center);
     floor.receiveShadow = true;
     this.group.add(floor);
@@ -118,7 +122,7 @@ export class Board {
   }
 
   addCube(x, z, colorId, type = 'normal') {
-    const cube = new Cube(x, z, colorId, type);
+    const cube = new Cube(x, z, colorId, type, this.theme);
     this.grid[x][z] = cube;
     this.group.add(cube.mesh);
   }
@@ -149,7 +153,8 @@ export class Board {
           animateIceBreak(neighbor.mesh).then(() => {
               this.removeCube(neighbor);
           });
-          this.particles.emit(neighbor.x, neighbor.z, 0xaaddff, 15);
+          const iceColor = this.theme ? this.theme.iceColor : 0xaaddff;
+          this.particles.emit(neighbor.x, neighbor.z, iceColor, 15);
         }
       }
     });

@@ -1,23 +1,25 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three-stdlib';
-import { getColor } from '../utils/colors.js';
+import { getColorForTheme } from '../utils/themes.js';
 
 export class Cube {
-  constructor(x, z, colorId, type = 'normal') {
+  constructor(x, z, colorId, type = 'normal', theme = null) {
     this.x = x;
     this.z = z;
     this.colorId = colorId;
     this.type = type; // 'normal' or 'ice'
     this.value = 1;
-    this.isMerging = false; 
+    this.isMerging = false;
+    this.theme = theme;
 
     // Use RoundedBoxGeometry for smoother look
     const geometry = new RoundedBoxGeometry(0.9, 0.9, 0.9, 4, 0.1);
     let material;
 
     if (this.type === 'ice') {
+      const iceColor = theme ? theme.iceColor : 0xaaddff;
       material = new THREE.MeshPhysicalMaterial({
-        color: 0xaaddff,
+        color: iceColor,
         transmission: 0.6, // Glass-like
         opacity: 0.8,
         transparent: true,
@@ -25,12 +27,13 @@ export class Cube {
         metalness: 0.1,
         thickness: 1.0, // Refraction volume
         ior: 1.5,
-        emissive: 0x2244aa,
+        emissive: iceColor,
         emissiveIntensity: 0.1
       });
     } else {
+      const cubeColor = theme ? getColorForTheme(theme, colorId) : 0xff3b30;
       material = new THREE.MeshStandardMaterial({ 
-        color: getColor(colorId),
+        color: cubeColor,
         roughness: 0.4, // Less plastic
         metalness: 0.1,
         envMapIntensity: 1.5 // Requires env map for best effect
@@ -54,7 +57,9 @@ export class Cube {
     if (this.type === 'ice') return;
     this.value *= 2;
     this.colorId++;
-    this.mesh.material.color.setHex(getColor(this.colorId));
+    if (this.theme) {
+      this.mesh.material.color.setHex(getColorForTheme(this.theme, this.colorId));
+    }
   }
 
   dispose() {

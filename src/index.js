@@ -5,10 +5,10 @@ import { createLights } from './core/lights.js';
 import { createComposer } from './core/composer.js';
 import { InputManager } from './core/input.js';
 import { Board } from './game/board.js';
-import { COLORS } from './utils/colors.js';
 import { SaveManager } from './core/save.js';
 import { LEVELS, getLevelConfig } from './game/levels.js';
 import { LeaderboardManager } from './core/leaderboard.js';
+import { getTheme } from './utils/themes.js';
 import * as THREE from 'three';
 
 // Setup Core
@@ -68,9 +68,10 @@ function updateUI(iceLeft, level) {
 
 function updateLegend() {
     legendContainer.innerHTML = '';
-    const limit = Math.min(COLORS.length, 9); 
+    const theme = getTheme(currentLevel);
+    const limit = Math.min(theme.colors.length, 9); 
     for (let i = 0; i < limit; i++) {
-        const hex = COLORS[i].toString(16).padStart(6, '0');
+        const hex = theme.colors[i].toString(16).padStart(6, '0');
         const div = document.createElement('div');
         div.className = 'legend-item';
         div.style.backgroundColor = `#${hex}`;
@@ -191,6 +192,10 @@ function initGame(level = 1) {
     currentLevel = level;
     SaveManager.setCurrentLevel(currentLevel);
     
+    // Apply theme to scene background
+    const theme = getTheme(currentLevel);
+    scene.background = new THREE.Color(theme.background);
+    
     // Get Config
     const config = getLevelConfig(level);
     
@@ -242,6 +247,37 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') handleMove('down');
     if (e.key === 'ArrowLeft') handleMove('left');
     if (e.key === 'ArrowRight') handleMove('right');
+    
+    // Skip Level on Spacebar
+    if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault(); // Prevent page scroll
+        if (
+            board &&
+            gameOverEl.classList.contains('hidden') && 
+            levelCompleteEl.classList.contains('hidden') &&
+            levelSelector.classList.contains('hidden') &&
+            gamertagModal.classList.contains('hidden') &&
+            leaderboardModal.classList.contains('hidden')
+        ) {
+            initGame(currentLevel + 1);
+        }
+    }
+    
+    // Previous Level on Dash/Minus
+    if (e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        if (
+            board &&
+            currentLevel > 1 &&
+            gameOverEl.classList.contains('hidden') && 
+            levelCompleteEl.classList.contains('hidden') &&
+            levelSelector.classList.contains('hidden') &&
+            gamertagModal.classList.contains('hidden') &&
+            leaderboardModal.classList.contains('hidden')
+        ) {
+            initGame(currentLevel - 1);
+        }
+    }
 });
 
 // Restart Logic
