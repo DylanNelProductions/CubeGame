@@ -1,10 +1,14 @@
-export function generateLevel(size = 4, maxColors = 2, difficulty = 1) {
-  // 0: Empty
-  // 1..N: Color ID + 1
-  // 100: Ice Block
+export function generateLevel(config) {
+  // config: { size, maxColors, iceCount, grid (optional fixed layout) }
   
+  // If fixed grid is provided (future proofing), use it
+  if (config.grid) {
+      // Deep copy to prevent mutation of config
+      return config.grid.map(row => [...row]);
+  }
+
+  const size = config.size;
   const grid = [];
-  const iceCount = Math.min(Math.floor(difficulty / 2) + 1, 6); // More ice as difficulty increases
   
   // Init empty grid
   for (let x = 0; x < size; x++) {
@@ -14,14 +18,17 @@ export function generateLevel(size = 4, maxColors = 2, difficulty = 1) {
 
   // Place Ice
   let placedIce = 0;
-  while (placedIce < iceCount) {
+  // Safety break to prevent infinite loop on full board
+  let attempts = 0;
+  while (placedIce < config.iceCount && attempts < 100) {
     const x = Math.floor(Math.random() * size);
     const z = Math.floor(Math.random() * size);
-    // Don't block center too much early on? Random is fine for now.
+    
     if (grid[x][z] === 0) {
       grid[x][z] = 100;
       placedIce++;
     }
+    attempts++;
   }
 
   // Place initial cubes
@@ -30,7 +37,7 @@ export function generateLevel(size = 4, maxColors = 2, difficulty = 1) {
       if (grid[x][z] === 0) {
         // 30% chance of a cube
         if (Math.random() < 0.3) {
-          grid[x][z] = Math.floor(Math.random() * maxColors) + 1; 
+          grid[x][z] = Math.floor(Math.random() * config.maxColors) + 1; 
         }
       }
     }

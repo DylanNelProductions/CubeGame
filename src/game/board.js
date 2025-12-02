@@ -4,6 +4,8 @@ import { generateLevel } from './levelGenerator.js';
 import { animateMove, animateMerge, animateBounce, animateIceBreak } from './animations.js';
 import { canMerge } from './mergeLogic.js';
 import { ParticleSystem } from './particles.js';
+import { getLevelConfig } from './levels.js';
+import { sounds } from '../core/audio.js'; // Import sounds
 import gsap from 'gsap';
 
 export class Board {
@@ -12,8 +14,8 @@ export class Board {
     this.size = size;
     this.level = level;
     
-    // Level Configuration
-    this.maxColors = Math.min(2 + Math.floor((this.level - 1) / 2), 6); 
+    const config = getLevelConfig(level);
+    this.maxColors = config.maxColors; 
     
     this.grid = []; 
     this.group = new THREE.Group();
@@ -33,7 +35,7 @@ export class Board {
     this.particles = new ParticleSystem(this.group);
     
     this.createFloor();
-    this.initLevel();
+    this.initLevel(config);
   }
 
   update(delta) {
@@ -79,8 +81,9 @@ export class Board {
     this.group.add(gridHelper);
   }
 
-  initLevel() {
-    const levelData = generateLevel(this.size, this.maxColors, this.level);
+  initLevel(config) {
+    // Pass full config to generator
+    const levelData = generateLevel(config);
     this.grid = Array(this.size).fill(null).map(() => Array(this.size).fill(null));
     this.iceLeft = 0;
 
@@ -127,6 +130,7 @@ export class Board {
           this.iceLeft--;
           
           // Visual Effects
+          sounds.playIceBreak();
           animateIceBreak(neighbor.mesh).then(() => {
               this.removeCube(neighbor);
           });
@@ -212,6 +216,7 @@ export class Board {
                 this.removeCube(cube);
                 mergeTarget.upgrade();
                 animateMerge(mergeTarget.mesh);
+                sounds.playMerge();
                 mergeTarget.isMerging = false;
                 
                 // Check Ice Break around the MERGE location
@@ -228,6 +233,7 @@ export class Board {
     }
 
     if (moved) {
+      sounds.playMove();
       await Promise.all(moves);
       if (this.iceLeft === 0) {
         this.levelCompleteListeners.forEach(cb => cb());
