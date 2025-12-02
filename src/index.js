@@ -37,7 +37,6 @@ const nextLevelBtn = document.getElementById('next-level-btn');
 const legendContainer = document.getElementById('legend-container');
 
 // Level Selector Elements
-const levelsBtn = document.getElementById('levels-btn');
 const levelSelector = document.getElementById('level-selector');
 const levelsGrid = document.getElementById('levels-grid');
 const closeLevelsBtn = document.getElementById('close-levels-btn');
@@ -46,10 +45,14 @@ const closeLevelsBtn = document.getElementById('close-levels-btn');
 const gamertagModal = document.getElementById('gamertag-modal');
 const gamertagInput = document.getElementById('gamertag-input');
 const saveGamertagBtn = document.getElementById('save-gamertag-btn');
-const leaderboardBtn = document.getElementById('leaderboard-btn');
 const leaderboardModal = document.getElementById('leaderboard-modal');
 const leaderboardList = document.getElementById('leaderboard-list');
 const closeLeaderboardBtn = document.getElementById('close-leaderboard-btn');
+
+// Bottom Nav Buttons
+const navLevels = document.getElementById('nav-levels');
+const navLeaderboard = document.getElementById('nav-leaderboard');
+const navGuide = document.getElementById('nav-guide');
 
 // Controls
 const btnUp = document.getElementById('btn-up');
@@ -252,7 +255,7 @@ nextLevelBtn.addEventListener('click', () => {
 });
 
 // Level Selector Logic
-levelsBtn.addEventListener('click', () => {
+navLevels.addEventListener('click', () => {
     renderLevelSelector();
     levelSelector.classList.remove('hidden');
 });
@@ -262,7 +265,7 @@ closeLevelsBtn.addEventListener('click', () => {
 });
 
 // Leaderboard Logic
-leaderboardBtn.addEventListener('click', async () => {
+navLeaderboard.addEventListener('click', async () => {
     await renderLeaderboard();
     leaderboardModal.classList.remove('hidden');
 });
@@ -272,8 +275,7 @@ closeLeaderboardBtn.addEventListener('click', () => {
 });
 
 // Legend Toggle Logic
-const legendToggleBtn = document.getElementById('legend-toggle-btn');
-legendToggleBtn.addEventListener('click', () => {
+navGuide.addEventListener('click', () => {
     legendContainer.classList.toggle('hidden');
 });
 

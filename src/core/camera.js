@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export function createCamera() {
   const aspect = window.innerWidth / window.innerHeight;
-  const frustumSize = 10;
+  const frustumSize = 14; // Increased from 10 for more spacing around board
   
   const camera = new THREE.OrthographicCamera(
     frustumSize * aspect / -2,

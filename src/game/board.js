@@ -64,9 +64,10 @@ export class Board {
   }
 
   createFloor() {
+    // Main Floor
     const geometry = new THREE.PlaneGeometry(this.size, this.size);
     const material = new THREE.MeshStandardMaterial({ 
-      color: 0x333333,
+      color: 0x2a2a2a, // Slightly lighter than background
       side: THREE.DoubleSide
     });
     const floor = new THREE.Mesh(geometry, material);
@@ -76,7 +77,21 @@ export class Board {
     floor.receiveShadow = true;
     this.group.add(floor);
 
-    const gridHelper = new THREE.GridHelper(this.size, this.size, 0x555555, 0x444444);
+    // Subtle shadow/border plane underneath
+    const shadowGeo = new THREE.PlaneGeometry(this.size + 0.4, this.size + 0.4);
+    const shadowMat = new THREE.MeshBasicMaterial({ 
+      color: 0x000000,
+      transparent: true,
+      opacity: 0.5,
+      side: THREE.DoubleSide
+    });
+    const shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.set(center, -0.05, center); // Just below
+    this.group.add(shadowPlane);
+
+    // Grid Helper
+    const gridHelper = new THREE.GridHelper(this.size, this.size, 0x444444, 0x333333);
     gridHelper.position.set(center, 0.01, center);
     this.group.add(gridHelper);
   }
