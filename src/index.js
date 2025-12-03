@@ -1,6 +1,6 @@
 import { createRenderer } from './core/renderer.js';
 import { createScene } from './core/scene.js';
-import { createCamera } from './core/camera.js';
+import { createCamera, updateCameraZoom } from './core/camera.js';
 import { createLights } from './core/lights.js';
 import { createComposer } from './core/composer.js';
 import { InputManager } from './core/input.js';
@@ -198,6 +198,9 @@ function initGame(level = 1) {
     
     // Get Config
     const config = getLevelConfig(level);
+    
+    // Update camera zoom based on board size
+    updateCameraZoom(camera, config.size);
     
     // Pass config size instead of hardcoded 4, pass level ID for difficulty scaling
     board = new Board(scene, config.size, currentLevel);
