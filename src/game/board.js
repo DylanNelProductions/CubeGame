@@ -10,12 +10,13 @@ import { sounds } from '../core/audio.js'; // Import sounds
 import gsap from 'gsap';
 
 export class Board {
-  constructor(scene, size = 4, level = 1) {
+  constructor(scene, size = 4, level = 1, modeConfig = null) {
     this.scene = scene;
-    this.size = size;
     this.level = level;
     
-    const config = getLevelConfig(level);
+    // Use modeConfig if provided, otherwise use classic level config
+    const config = modeConfig || getLevelConfig(level);
+    this.size = config.size || size;
     this.maxColors = config.maxColors;
     this.theme = getTheme(level); 
     
@@ -28,7 +29,7 @@ export class Board {
     this.gameOverListeners = [];
     this.levelCompleteListeners = [];
     
-    const offset = (size - 1) / 2;
+    const offset = (this.size - 1) / 2;
     this.group.position.set(-offset, 0, -offset);
     
     this.scene.add(this.group);

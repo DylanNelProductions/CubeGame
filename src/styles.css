@@ -1,10 +1,38 @@
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+html {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  -ms-touch-action: none;
+}
+
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #1a1a1a;
   color: #ffffff;
+  touch-action: none;
+  -ms-touch-action: none;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 #game-container {
@@ -161,7 +189,7 @@ body {
   transform: scale(0.95);
 }
 
-#game-over, #level-complete, #level-selector, #gamertag-modal, #leaderboard-modal {
+#game-over, #level-complete, #level-selector, #gamertag-modal, #leaderboard-modal, #mode-selector {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -180,7 +208,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#level-selector, #leaderboard-modal {
+#level-selector, #leaderboard-modal, #mode-selector {
     width: 300px;
     max-height: 80vh;
 }
@@ -259,6 +287,43 @@ body {
     border-color: #222;
 }
 
+#modes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.mode-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.mode-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.mode-btn-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.mode-btn-desc {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
 .hidden {
   display: none !important;
   opacity: 0;
@@ -285,8 +350,9 @@ button:not(.arrow-btn):not(.nav-btn):not(.level-btn):hover {
 /* Mobile Optimizations */
 @media (max-width: 600px) {
   #header {
-    top: 10px;
+    top: max(10px, env(safe-area-inset-top, 10px));
     left: 16px;
+    z-index: 10;
   }
   
   #level {
@@ -296,6 +362,11 @@ button:not(.arrow-btn):not(.nav-btn):not(.level-btn):hover {
   #score {
     font-size: 16px;
     opacity: 0.8;
+  }
+  
+  #bottom-nav {
+    bottom: max(0px, env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   #legend-container {
@@ -333,12 +404,28 @@ button:not(.arrow-btn):not(.nav-btn):not(.level-btn):hover {
     height: 50px;
   }
 
-  #level-selector, #leaderboard-modal, #gamertag-modal, #game-over, #level-complete {
+  #level-selector, #leaderboard-modal, #gamertag-modal, #game-over, #level-complete, #mode-selector {
     width: 85%; 
     padding: 24px;
   }
   
   #levels-grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  #modes-grid {
+    max-height: 50vh;
+  }
+
+  .mode-btn {
+    padding: 14px;
+  }
+
+  .mode-btn-title {
+    font-size: 16px;
+  }
+
+  .mode-btn-desc {
+    font-size: 13px;
   }
 }
